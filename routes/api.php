@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\API\ExpenseController;
+use App\Http\Controllers\API\LeaseController;
+use App\Http\Controllers\API\NotificationController;
+use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\PropertyController;
 use App\Http\Controllers\API\TenantController;
 use App\Http\Controllers\API\UnitController;
@@ -34,6 +38,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('properties', PropertyController::class);
         Route::apiResource('units', UnitController::class);
         Route::apiResource('tenants', TenantController::class);
+        Route::apiResource('leases', LeaseController::class);
+        Route::apiResource('payments', PaymentController::class);
+        Route::apiResource('expenses', ExpenseController::class);
+        Route::apiResource('notifications', NotificationController::class);
     });
 
     // 👤 Shared access
