@@ -8,72 +8,64 @@ use Illuminate\Http\Request;
 
 class UnitController extends Controller
 {
-    public function __construct(
-        protected UnitService $service
-    ) {}
+   protected $unitService;
 
-    // 🔹 GET ALL
+    public function __construct(UnitService $unitService)
+    {
+        $this->unitService = $unitService;
+    }
+
     public function index()
     {
-        $userId = auth()->id();
         return response()->json(
-            $this->service->getAll($userId)
+            $this->unitService->listUnits(auth()->id())
         );
     }
 
-    // 🔹 CREATE
-    public function store(Request $request)
-    {
-        $userId = auth()->id();
-
-        $data = $request->validate([
-            'property_id' => 'required|integer',
-            'unit_number' => 'required|string|unique:units,unit_number',
-            'floor' => 'required|integer',
-            'rent_amount' => 'required|numeric',
-            'status' => 'required|string'
-        ]);
-
-        return response()->json(
-            $this->service->store($data, $userId)
-        );
-    }
-
-    // 🔹 SHOW
     public function show($id)
     {
-        $userId = auth()->id();
-
         return response()->json(
-            $this->service->find($id, $userId)
+            $this->unitService->getUnit($id, auth()->id())
         );
     }
 
-    // 🔹 UPDATE
-    public function update(Request $request, $id)
+    public function store(Request $request)
     {
-        $userId = auth()->id();
-
         $data = $request->validate([
-            'property_id' => 'required|integer',
-            'unit_number' => 'required|string|unique:units,unit_number,' . $id,
+            'property_id' => 'required|exists:properties,id',
+            'unit_number' => 'required|unique:units',
             'floor' => 'required|integer',
             'rent_amount' => 'required|numeric',
-            'status' => 'required|string'
+            'status' => 'in:vacant,occupied'
         ]);
 
         return response()->json(
-            $this->service->update($id, $data, $userId)
+            $this->unitService->createUnit($data, auth()->id()),
+            201
         );
     }
 
-    // 🔹 DELETE
+    public function update(Request $request, $id)
+    {
+        $data = $request->validate([
+            'property_id' => 'sometimes|exists:properties,id',
+            'unit_number' => "sometimes|unique:units,unit_number,$id",
+            'floor' => 'sometimes|integer',
+            'rent_amount' => 'sometimes|numeric',
+            'status' => 'in:vacant,occupied'
+        ]);
+
+        return response()->json(
+            $this->unitService->updateUnit($id, auth()->id(), $data)
+        );
+    }
+
     public function destroy($id)
     {
-        $userId = auth()->id();
+        $this->unitService->deleteUnit($id, auth()->id());
 
         return response()->json([
-            'deleted' => $this->service->delete($id, $userId)
+            'message' => 'Deleted successfully'
         ]);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Contracts;
 
-interface UnitRepositoryInterface
+interface TenantRepositoryInterface
 {
     public function getAllByUser($userId);
     public function findById($id, $userId);

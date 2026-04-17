@@ -7,19 +7,15 @@ use App\Repositories\Contracts\UnitRepositoryInterface;
 
 class UnitRepository implements UnitRepositoryInterface
 {
-public function all($userId)
+    public function getAllByUser($userId)
     {
-        return Unit::whereHas('property', function ($q) use ($userId) {
-            $q->where('user_id', $userId);
-        })->get();
+        return Unit::where('user_id', $userId)->get();
     }
 
-    public function find($id, $userId)
+    public function findById($id, $userId)
     {
         return Unit::where('id', $id)
-            ->whereHas('property', function ($q) use ($userId) {
-                $q->where('user_id', $userId);
-            })
+            ->where('user_id', $userId)
             ->firstOrFail();
     }
 
@@ -28,26 +24,16 @@ public function all($userId)
         return Unit::create($data);
     }
 
-    public function update($id, array $data, $userId)
+    public function update($id, $userId, array $data)
     {
-        $unit = Unit::where('id', $id)
-            ->whereHas('property', function ($q) use ($userId) {
-                $q->where('user_id', $userId);
-            })
-            ->firstOrFail();
-
+        $unit = $this->findById($id, $userId);
         $unit->update($data);
         return $unit;
     }
 
     public function delete($id, $userId)
     {
-        $unit = Unit::where('id', $id)
-            ->whereHas('property', function ($q) use ($userId) {
-                $q->where('user_id', $userId);
-            })
-            ->firstOrFail();
-
+        $unit = $this->findById($id, $userId);
         return $unit->delete();
     }
 }

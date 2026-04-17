@@ -7,14 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 class Unit extends Model
 {
     protected $fillable = [
+        'user_id',
         'property_id',
         'unit_number',
         'floor',
         'rent_amount',
-        'status',
+        'status'
     ];
 
-    // Each Unit belongs to one Property
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function property()
     {
         return $this->belongsTo(Property::class);

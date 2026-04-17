@@ -7,37 +7,36 @@ use App\Repositories\Contracts\UnitRepositoryInterface;
 
 class UnitService
 {
-    public function __construct(
-        protected UnitRepositoryInterface $repository
-    ) {}
+    protected $unitRepository;
 
-    public function getAll($userId)
+    public function __construct(UnitRepositoryInterface $unitRepository)
     {
-        return $this->repository->all($userId);
+        $this->unitRepository = $unitRepository;
     }
 
-    public function find($id, $userId)
+    public function listUnits($userId)
     {
-        return $this->repository->find($id, $userId);
+        return $this->unitRepository->getAllByUser($userId);
     }
 
-    public function store(array $data, $userId)
+    public function getUnit($id, $userId)
     {
-        // 🔒 ownership check
-        $property = Property::where('id', $data['property_id'])
-            ->where('user_id', $userId)
-            ->firstOrFail();
-
-        return $property->units()->create($data);
+        return $this->unitRepository->findById($id, $userId);
     }
 
-    public function update($id, array $data, $userId)
+    public function createUnit($data, $userId)
     {
-        return $this->repository->update($id, $data, $userId);
+        $data['user_id'] = $userId;
+        return $this->unitRepository->create($data);
     }
 
-    public function delete($id, $userId)
+    public function updateUnit($id, $userId, $data)
     {
-        return $this->repository->delete($id, $userId);
+        return $this->unitRepository->update($id, $userId, $data);
+    }
+
+    public function deleteUnit($id, $userId)
+    {
+        return $this->unitRepository->delete($id, $userId);
     }
 }

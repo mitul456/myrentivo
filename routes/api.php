@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\PropertyController;
+use App\Http\Controllers\API\TenantController;
 use App\Http\Controllers\API\UnitController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         Route::apiResource('properties', PropertyController::class);
         Route::apiResource('units', UnitController::class);
+        Route::apiResource('tenants', TenantController::class);
     });
 
     // 👤 Shared access

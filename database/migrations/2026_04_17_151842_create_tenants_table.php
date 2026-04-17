@@ -11,15 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('units', function (Blueprint $table) {
+        Schema::create('tenants', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('property_id')->constrained()->cascadeOnDelete();
-            $table->string('unit_number')->unique();
-            $table->integer('floor');
-            $table->decimal('rent_amount', 10, 2);
-            $table->enum('status', ['vacant', 'occupied'])->default('vacant');
+            
+            $table->string('name');
+            $table->string('phone')->unique();
+            $table->string('email')->unique();
+            $table->string('nid_number')->unique();
+            $table->text('address')->nullable();
 
             $table->timestamps();
         });
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('units');
+        Schema::dropIfExists('tenants');
     }
 };
