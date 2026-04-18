@@ -21,8 +21,32 @@ class Lease extends Model
         'status',
     ];
 
+    protected static function booted()
+    {
+        // যখন lease create হয়
+        static::created(function ($lease) {
+            $lease->unit->update([
+                'status' => 'occupied'
+            ]);
+        });
+
+        // যখন lease update হয়
+        static::updated(function ($lease) {
+            if ($lease->status === 'ended') {
+                $lease->unit->update([
+                    'status' => 'vacant'
+                ]);
+            }
+        });
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class);
     }
 }

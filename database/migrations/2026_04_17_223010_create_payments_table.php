@@ -18,9 +18,10 @@ return new class extends Migration
             $table->foreignId('lease_id')->constrained()->cascadeOnDelete();
 
             $table->decimal('amount', 10, 2);
+            $table->decimal('paid_amount', 10, 2)->default(0)->after('amount');
             $table->date('payment_date');
 
-            $table->string('month');
+            $table->date('month');
             $table->enum('status', ['paid', 'due', 'partial', 'unpaid'])->default('paid');
             $table->string('payment_method')->nullable();            
             $table->text('notes')->nullable();
